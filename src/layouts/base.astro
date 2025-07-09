@@ -5,6 +5,7 @@ import '../assets/global.css'
 import { SEO } from 'astro-seo'
 import { getEnv } from '../lib/env'
 import backToTopIcon from '../assets/back-to-top.svg'
+import Analytics from '@vercel/analytics/astro'
 
 const { SITE_URL, RSS_URL, RSS_PREFIX } = Astro.locals
 const { channel } = Astro.props
@@ -172,5 +173,6 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
       <img {...backToTopIcon} alt="Back to Top" />
     </a>
     <Fragment set:html={FOOTER_INJECT} />
+    <Analytics />
   </body>
 </html>
