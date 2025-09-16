@@ -5,6 +5,7 @@ import '../assets/global.css'
 import { SEO } from 'astro-seo'
 import { getEnv } from '../lib/env'
 import backToTopIcon from '../assets/back-to-top.svg'
+import ThemeStyles from '../components/theme-styles.astro'
 
 const { SITE_URL, RSS_URL, RSS_PREFIX } = Astro.locals
 const { channel } = Astro.props
@@ -93,6 +94,8 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
     />
     <Fragment set:html={HEADER_INJECT} />
     
+    <!-- 主题样式注入 -->
+    <ThemeStyles />
 
   </head>
 

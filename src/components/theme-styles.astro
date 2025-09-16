@@ -1,0 +1,149 @@
+---
+import type { ThemeContext } from '../types/theme'
+
+// 从Astro.locals获取主题上下文
+const themeContext: ThemeContext | undefined = Astro.locals.themeContext
+
+// 创建默认主题配置
+const defaultTheme = {
+  variables: {
+    '--background-color': '#ffffff',
+    '--foreground-color': '#000000',
+    '--highlight-color': '#0066cc',
+    '--border-color': '#e0e0e0',
+    '--cell-background-color': '#f8f9fa',
+    '--theme-name': '"default"'
+  },
+  version: '1.0.0',
+  description: 'Default theme'
+}
+
+// 使用主题上下文或默认配置
+let theme, themeName
+if (themeContext) {
+  theme = themeContext.theme
+  themeName = themeContext.themeName
+  // 确保主题变量中包含主题名称
+  theme.variables = {
+    ...theme.variables,
+    '--theme-name': `"${themeName}"`
+  }
+  console.log(`✅ 使用主题: ${themeName}`)
+} else {
+  theme = defaultTheme
+  themeName = 'default'
+  console.log('⚠️ 主题上下文未找到，使用默认主题配置')
+}
+
+// 生成CSS变量字符串
+function generateCSSVariables(variables: Record<string, string>): string {
+  return Object.entries(variables)
+    .map(([key, value]) => `  ${key}: ${value};`)
+    .join('\n')
+}
+
+// 生成主题样式
+const cssVariables = generateCSSVariables(theme.variables)
+const hasCustomStyles = theme.styles && Object.keys(theme.styles).length > 0
+---
+
+<!-- 主题CSS变量注入 -->
+<style is:global define:vars={{ ...theme.variables }}>
+  :root {
+    /* CSS变量通过define:vars自动注入 */
+  }
+  
+  /* 主题标识 */
+  html {
+    --current-theme: var(--theme-name, 'default');
+  }
+  
+  /* 响应式设计基础 */
+  @media (max-width: 768px) {
+    :root {
+      --mobile-scale: 0.9;
+      --mobile-padding: 1rem;
+      --mobile-margin: 0.5rem;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    :root {
+      --desktop-scale: 1;
+      --desktop-padding: 2rem;
+      --desktop-margin: 1rem;
+    }
+  }
+</style>
+
+<!-- 主题自定义样式注入 -->
+{hasCustomStyles && (
+  <Fragment>
+    {theme.styles?.['variables.css'] && (
+      <style is:global set:html={theme.styles['variables.css']} />
+    )}
+    {theme.styles?.['components.css'] && (
+      <style is:global set:html={theme.styles['components.css']} />
+    )}
+    {theme.styles?.['custom.css'] && (
+      <style is:global set:html={theme.styles['custom.css']} />
+    )}
+  </Fragment>
+)}
+
+<!-- 主题元数据 -->
+<meta name="theme-name" content={themeName} />
+<meta name="theme-version" content={theme.version} />
+{theme.description && <meta name="theme-description" content={theme.description} />}
+{theme.author && <meta name="theme-author" content={theme.author} />}
+
+<!-- 主题特性支持 -->
+{theme.features?.darkMode && <meta name="theme-supports-dark-mode" content="true" />}
+{theme.features?.animations && <meta name="theme-supports-animations" content="true" />}
+{theme.features?.customFonts && <meta name="theme-supports-custom-fonts" content="true" />}
+
+<!-- 主题资源预加载 -->
+{theme.assets?.fonts && theme.assets.fonts.map(font => (
+  <link rel="preload" href={`/theme/${themeName}/assets/fonts/${font}`} as="font" type="font/woff2" crossorigin />
+))}
+
+{theme.assets?.images && theme.assets.images.slice(0, 3).map(image => (
+  <link rel="preload" href={`/theme/${themeName}/assets/images/${image}`} as="image" />
+))}
+
+<!-- 主题兼容性检查脚本 -->
+<script is:inline define:vars={{ themeName, themeVersion: theme.version }}>
+  // 主题兼容性检查
+  if (typeof window !== 'undefined') {
+    window.THEME_INFO = {
+      name: themeName,
+      version: themeVersion,
+      loadedAt: new Date().toISOString()
+    }
+    
+    // 触发主题加载完成事件
+    window.dispatchEvent(new CustomEvent('theme:loaded', {
+      detail: window.THEME_INFO
+    }))
+    
+    // 响应式设计支持
+    function updateViewportClass() {
+      const html = document.documentElement
+      const width = window.innerWidth
+      
+      html.classList.remove('mobile', 'tablet', 'desktop')
+      
+      if (width <= 768) {
+        html.classList.add('mobile')
+      } else if (width <= 1024) {
+        html.classList.add('tablet')
+      } else {
+        html.classList.add('desktop')
+      }
+    }
+    
+    // 初始化和监听窗口大小变化
+    updateViewportClass()
+    window.addEventListener('resize', updateViewportClass)
+  }
+</script>

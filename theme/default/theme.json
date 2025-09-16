@@ -1,0 +1,51 @@
+{
+  "name": "default",
+  "displayName": "默认主题",
+  "description": "BroadcastChannel的默认主题，基于原有的Sepia设计风格",
+  "version": "1.0.0",
+  "author": "BroadcastChannel Team",
+  "homepage": "https://github.com/ccbikai/BroadcastChannel",
+  "license": "MIT",
+  "keywords": ["default", "sepia", "classic"],
+  "variables": {
+    "--background-color": "#f4f1ec",
+    "--foreground-color": "#2c2c2c",
+    "--highlight-color": "#d4af37",
+    "--border-color": "#e0ddd6",
+    "--cell-background-color": "#ffffff",
+    "--text-color": "#2c2c2c",
+    "--text-secondary-color": "#666666",
+    "--link-color": "#0066cc",
+    "--link-hover-color": "#004499",
+    "--shadow-color": "rgba(0, 0, 0, 0.1)",
+    "--border-radius": "8px",
+    "--border-radius-small": "4px",
+    "--spacing-xs": "0.25rem",
+    "--spacing-sm": "0.5rem",
+    "--spacing-md": "1rem",
+    "--spacing-lg": "1.5rem",
+    "--spacing-xl": "2rem",
+    "--font-family-base": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    "--font-family-mono": "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+    "--font-size-xs": "0.75rem",
+    "--font-size-sm": "0.875rem",
+    "--font-size-base": "1rem",
+    "--font-size-lg": "1.125rem",
+    "--font-size-xl": "1.25rem",
+    "--font-size-2xl": "1.5rem",
+    "--line-height-tight": "1.25",
+    "--line-height-normal": "1.5",
+    "--line-height-relaxed": "1.75",
+    "--transition-fast": "0.15s ease",
+    "--transition-normal": "0.3s ease",
+    "--transition-slow": "0.5s ease"
+  },
+  "features": {
+    "darkMode": false,
+    "animations": true,
+    "customFonts": false
+  },
+  "compatibility": {
+    "minVersion": "1.0.0"
+  }
+}

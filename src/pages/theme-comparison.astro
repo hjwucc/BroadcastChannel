@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../layouts/base.astro'
+import ThemeStyles from '../components/theme-styles.astro'
+---
+
+<BaseLayout title="主题对比测试">
+  <ThemeStyles />
+  
+  <div class="theme-comparison-container">
+    <h1>iOS主题 vs Default主题对比</h1>
+    
+    <!-- 当前主题信息 -->
+    <div class="current-theme-info">
+      <h2>当前主题信息</h2>
+      <div id="theme-info" class="theme-info-box"></div>
+    </div>
+    
+    <!-- 样式对比区域 -->
+    <div class="comparison-grid">
+      <!-- 背景色对比 -->
+      <div class="comparison-item">
+        <h3>背景色</h3>
+        <div class="color-sample background-sample">
+          <span>当前背景色</span>
+        </div>
+        <div class="color-info">
+          <p>iOS: #f2f2f7 (浅灰蓝)</p>
+          <p>Default: #f4f1ec (米色)</p>
+        </div>
+      </div>
+      
+      <!-- 高亮色对比 -->
+      <div class="comparison-item">
+        <h3>高亮色</h3>
+        <div class="color-sample highlight-sample">
+          <span style="color: var(--highlight-color)">高亮文本</span>
+        </div>
+        <div class="color-info">
+          <p>iOS: #007aff (蓝色)</p>
+          <p>Default: orangered (橙红色)</p>
+        </div>
+      </div>
+      
+      <!-- 圆角对比 */
+      <div class="comparison-item">
+        <h3>圆角大小</h3>
+        <div class="border-radius-sample">
+          <div class="sample-box">圆角示例</div>
+        </div>
+        <div class="color-info">
+          <p>iOS: 12px (更圆润)</p>
+          <p>Default: 3px (较小)</p>
+        </div>
+      </div>
+      
+      <!-- 字体对比 */
+      <div class="comparison-item">
+        <h3>字体样式</h3>
+        <div class="font-sample">
+          <p class="sample-text">这是示例文本 Sample Text</p>
+        </div>
+        <div class="color-info">
+          <p>iOS: SF Pro Display (苹果系统字体)</p>
+          <p>Default: 系统默认字体</p>
+        </div>
+      </div>
+      
+      <!-- 阴影对比 */
+      <div class="comparison-item">
+        <h3>阴影效果</h3>
+        <div class="shadow-sample">
+          <div class="sample-card">阴影示例</div>
+        </div>
+        <div class="color-info">
+          <p>iOS: 柔和阴影 (0.08透明度)</p>
+          <p>Default: 多层阴影 (0.02透明度)</p>
+        </div>
+      </div>
+      
+      <!-- 按钮样式对比 */
+      <div class="comparison-item">
+        <h3>按钮样式</h3>
+        <div class="button-sample">
+          <button class="sample-button">示例按钮</button>
+        </div>
+        <div class="color-info">
+          <p>iOS: 圆润按钮，蓝色主题</p>
+          <p>Default: 方形按钮，橙色主题</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CSS变量检查 -->
+    <div class="css-variables-check">
+      <h2>CSS变量值检查</h2>
+      <div id="css-variables" class="variables-list"></div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .theme-comparison-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: var(--font-family-base);
+  }
+  
+  h1 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    color: var(--text-color);
+    border-bottom: 2px solid var(--highlight-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .current-theme-info {
+    background: var(--cell-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadows);
+  }
+  
+  .theme-info-box {
+    background: var(--code-background-color);
+    border-radius: var(--border-radius-small);
+    padding: 1rem;
+    font-family: var(--font-family-mono);
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+  }
+  
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .comparison-item {
+    background: var(--cell-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadows);
+    transition: var(--transition-normal);
+  }
+  
+  .comparison-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+  }
+  
+  .color-sample {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .background-sample {
+    background: var(--background-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+  }
+  
+  .highlight-sample {
+    background: var(--cell-background-color);
+    border: 2px solid var(--highlight-color);
+  }
+  
+  .border-radius-sample {
+    margin: 1rem 0;
+  }
+  
+  .sample-box {
+    background: var(--highlight-color);
+    color: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .font-sample {
+    margin: 1rem 0;
+  }
+  
+  .sample-text {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-normal);
+    color: var(--text-color);
+    margin: 0;
+  }
+  
+  .shadow-sample {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .sample-card {
+    background: var(--cell-background-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadows);
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-color);
+  }
+  
+  .button-sample {
+    margin: 1rem 0;
+    text-align: center;
+  }
+  
+  .sample-button {
+    background: var(--highlight-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+  
+  .sample-button:hover {
+    background: var(--link-hover-color);
+    transform: translateY(-1px);
+  }
+  
+  .color-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary-color);
+    line-height: 1.4;
+  }
+  
+  .color-info p {
+    margin: 0.25rem 0;
+  }
+  
+  .css-variables-check {
+    background: var(--cell-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadows);
+  }
+  
+  .variables-list {
+    background: var(--code-background-color);
+    border-radius: var(--border-radius-small);
+    padding: 1rem;
+    font-family: var(--font-family-mono);
+    font-size: 0.85rem;
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+  
+  @media (max-width: 768px) {
+    .theme-comparison-container {
+      padding: 1rem;
+    }
+    
+    .comparison-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<script>
+  // 显示当前主题信息
+  function displayThemeInfo() {
+    const themeInfoElement = document.getElementById('theme-info')
+    if (!themeInfoElement) return
+    
+    // 获取主题相关的响应头
+    const themeName = document.querySelector('meta[name="theme-name"]')?.content || '未知'
+    const themeVersion = document.querySelector('meta[name="theme-version"]')?.content || '未知'
+    
+    const info = `当前主题: ${themeName}
+版本: ${themeVersion}
+加载时间: ${new Date().toLocaleString()}`
+    themeInfoElement.textContent = info
+  }
+  
+  // 显示CSS变量值
+  function displayCSSVariables() {
+    const variablesElement = document.getElementById('css-variables')
+    if (!variablesElement) return
+    
+    const rootStyles = getComputedStyle(document.documentElement)
+    const importantVariables = [
+      '--background-color',
+      '--foreground-color', 
+      '--highlight-color',
+      '--border-color',
+      '--cell-background-color',
+      '--text-color',
+      '--text-secondary-color',
+      '--link-color',
+      '--border-radius',
+      '--border-radius-small',
+      '--box-border-radius',
+      '--media-border-radius',
+      '--shadows',
+      '--font-family-base',
+      '--transition-normal'
+    ]
+    
+    let variablesText = '重要CSS变量当前值:\n\n'
+    importantVariables.forEach(variable => {
+      const value = rootStyles.getPropertyValue(variable).trim()
+      variablesText += `${variable}: ${value || '未定义'}\n`
+    })
+    
+    variablesElement.textContent = variablesText
+  }
+  
+  // 页面加载完成后执行
+  document.addEventListener('DOMContentLoaded', function() {
+    displayThemeInfo()
+    displayCSSVariables()
+    
+    // 添加主题信息到页面标题
+    const themeName = document.querySelector('meta[name="theme-name"]')?.content || 'unknown'
+    document.title = `主题对比测试 - 当前主题: ${themeName}`
+  })
+</script>

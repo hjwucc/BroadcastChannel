@@ -1,0 +1,172 @@
+---
+import Layout from '../layouts/base.astro'
+import ThemeStyles from '../components/theme-styles.astro'
+---
+
+<Layout title="主题测试页面">
+  <ThemeStyles />
+  
+  <main class="theme-test-container">
+    <h1>主题系统测试</h1>
+    
+    <div class="test-section">
+      <h2>颜色测试</h2>
+      <div class="color-box background">背景色</div>
+      <div class="color-box foreground">前景色</div>
+      <div class="color-box highlight">高亮色</div>
+      <div class="color-box border">边框色</div>
+      <div class="color-box cell">单元格背景色</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>响应式测试</h2>
+      <div class="responsive-box">这个盒子会根据屏幕大小调整</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>主题信息</h2>
+      <div id="theme-info">加载中...</div>
+    </div>
+  </main>
+  
+  <style>
+    .theme-test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--desktop-padding, 2rem);
+      font-family: system-ui, sans-serif;
+    }
+    
+    .test-section {
+      margin: 2rem 0;
+      padding: 1rem;
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--cell-background-color, #f8f9fa);
+    }
+    
+    .color-box {
+      display: inline-block;
+      padding: 1rem;
+      margin: 0.5rem;
+      border-radius: 4px;
+      color: var(--foreground-color, #000);
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    .color-box.background {
+      background-color: var(--background-color, #fff);
+      border: 1px solid var(--border-color, #e0e0e0);
+    }
+    
+    .color-box.foreground {
+      background-color: var(--foreground-color, #000);
+      color: var(--background-color, #fff);
+    }
+    
+    .color-box.highlight {
+      background-color: var(--highlight-color, #0066cc);
+      color: var(--background-color, #fff);
+    }
+    
+    .color-box.border {
+      background-color: var(--border-color, #e0e0e0);
+    }
+    
+    .color-box.cell {
+      background-color: var(--cell-background-color, #f8f9fa);
+    }
+    
+    .responsive-box {
+      padding: var(--desktop-padding, 2rem);
+      background: var(--highlight-color, #0066cc);
+      color: var(--background-color, #fff);
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+      .theme-test-container {
+        padding: var(--mobile-padding, 1rem);
+      }
+      
+      .responsive-box {
+        padding: var(--mobile-padding, 1rem);
+        font-size: 0.9em;
+      }
+      
+      .color-box {
+        display: block;
+        margin: 0.5rem 0;
+      }
+    }
+    
+    h1 {
+      color: var(--highlight-color, #0066cc);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    h2 {
+      color: var(--foreground-color, #000);
+      border-bottom: 2px solid var(--highlight-color, #0066cc);
+      padding-bottom: 0.5rem;
+    }
+    
+    #theme-info {
+      background: var(--background-color, #fff);
+      border: 1px solid var(--border-color, #e0e0e0);
+      padding: 1rem;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+  
+  <script>
+    // 显示主题信息
+    function displayThemeInfo() {
+      const themeInfo = window.THEME_INFO || {
+        name: '未知',
+        version: '未知',
+        loadedAt: '未知'
+      }
+      
+      const computedStyle = getComputedStyle(document.documentElement)
+      const cssVars = {
+        '--background-color': computedStyle.getPropertyValue('--background-color'),
+        '--foreground-color': computedStyle.getPropertyValue('--foreground-color'),
+        '--highlight-color': computedStyle.getPropertyValue('--highlight-color'),
+        '--border-color': computedStyle.getPropertyValue('--border-color'),
+        '--cell-background-color': computedStyle.getPropertyValue('--cell-background-color'),
+        '--theme-name': computedStyle.getPropertyValue('--theme-name')
+      }
+      
+      const info = `主题信息:
+名称: ${themeInfo.name}
+版本: ${themeInfo.version}
+加载时间: ${themeInfo.loadedAt}
+
+CSS变量:
+${Object.entries(cssVars).map(([key, value]) => `${key}: ${value}`).join('\n')}
+
+当前屏幕类型: ${document.documentElement.classList.contains('mobile') ? '移动端' : document.documentElement.classList.contains('tablet') ? '平板' : '桌面端'}`
+      
+      document.getElementById('theme-info').textContent = info
+    }
+    
+    // 等待主题加载完成
+    if (window.THEME_INFO) {
+      displayThemeInfo()
+    } else {
+      window.addEventListener('theme:loaded', displayThemeInfo)
+    }
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', () => {
+      setTimeout(displayThemeInfo, 100)
+    })
+  </script>
+</Layout>

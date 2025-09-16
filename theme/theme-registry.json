@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "defaultTheme": "default",
+  "fallbackTheme": "default",
+  "themes": {
+    "default": {
+      "name": "默认主题",
+      "description": "基于原有Sepia风格的默认主题，保持经典的阅读体验",
+      "version": "1.0.0",
+      "author": "BroadcastChannel Team",
+      "configFile": "theme/default/theme.json",
+      "variablesFile": "theme/default/variables.css",
+      "componentsFile": null,
+      "previewImage": "theme/default/assets/images/preview.png",
+      "tags": ["default", "sepia", "classic", "reading"],
+      "compatibility": {
+        "mobile": true,
+        "tablet": true,
+        "desktop": true,
+        "darkMode": true
+      },
+      "features": {
+        "responsive": true,
+        "darkMode": true,
+        "customColors": true,
+        "animations": true
+      },
+      "status": "stable"
+    },
+    "ios": {
+      "name": "iOS主题",
+      "description": "模仿iOS系统设计风格的现代主题，提供原生应用般的体验",
+      "version": "1.0.0",
+      "author": "BroadcastChannel Team",
+      "configFile": "theme/ios/theme.json",
+      "variablesFile": "theme/ios/variables.css",
+      "componentsFile": "theme/ios/components.css",
+      "previewImage": "theme/ios/assets/images/preview.png",
+      "tags": ["ios", "modern", "mobile", "native"],
+      "compatibility": {
+        "mobile": true,
+        "tablet": true,
+        "desktop": true,
+        "darkMode": true
+      },
+      "features": {
+        "responsive": true,
+        "darkMode": true,
+        "customColors": true,
+        "animations": true,
+        "nativeFeeling": true
+      },
+      "status": "stable"
+    }
+  },
+  "categories": {
+    "style": {
+      "classic": ["default"],
+      "modern": ["ios"]
+    },
+    "platform": {
+      "universal": ["default", "ios"],
+      "mobile-optimized": ["ios"]
+    },
+    "color": {
+      "warm": ["default"],
+      "cool": ["ios"]
+    }
+  },
+  "settings": {
+    "enableThemeSwitching": true,
+    "enableAutoDetection": true,
+    "enableDarkModeSync": true,
+    "cacheThemes": true,
+    "preloadThemes": false,
+    "debugMode": false
+  },
+  "validation": {
+    "requiredFiles": ["theme.json", "variables.css"],
+    "optionalFiles": ["components.css", "assets/"],
+    "requiredProperties": {
+      "theme.json": ["name", "version", "variables"]
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2024-01-01T00:00:00Z",
+    "registryVersion": "1.0.0",
+    "supportedFormats": ["css", "json"],
+    "minimumVersion": "1.0.0"
+  }
+}

@@ -1,0 +1,103 @@
+/* iOS主题 CSS 变量定义 - 通透高级感设计 */
+:root {
+  /* 基础颜色 - 通透白色系 */
+  --background-color: rgba(255, 255, 255, 0.95); /* 主背景：半透明白色，营造通透感 */
+  --foreground-color: #1a1a1a; /* 主文字色：深灰色，确保可读性 */
+  --highlight-color: #007AFF; /* 强调色：iOS蓝色，更现代 */
+  --border-color: rgba(0, 0, 0, 0.08); /* 边框色：更柔和的透明灰 */
+  --cell-background-color: rgba(255, 255, 255, 0.85); /* 卡片背景：半透明白色 */
+  --code-background-color: rgba(248, 249, 250, 0.9); /* 代码背景：半透明浅灰 */
+  --secondary-color: #8E8E93; /* 次要文字色：iOS系统灰色 */
+  
+  /* 链接颜色 */
+  --link-color: var(--highlight-color);
+  
+  /* 圆角 */
+  --box-border-radius: 3px;
+  --media-border-radius: 8px;
+  --border-radius: 8px;
+  --border-radius-small: 4px;
+  
+  /* 间距 */
+  --box-margin: 10px;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* 阴影 - 增强层次感和高级感 */
+  --shadows: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.03), 0 16px 48px rgba(0, 0, 0, 0.02); /* 多层次柔和阴影 */
+  --shadow-color: rgba(0, 0, 0, 0.08); /* 阴影颜色：更柔和 */
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04); /* 悬浮阴影 */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06); /* 卡片阴影 */
+  
+  /* 毛玻璃效果 - 增加现代感 */
+  --backdrop-blur: blur(20px); /* 背景模糊效果 */
+  --backdrop-blur-light: blur(10px); /* 轻度模糊效果 */
+  --glass-background: rgba(255, 255, 255, 0.7); /* 毛玻璃背景 */
+  --glass-border: rgba(255, 255, 255, 0.2); /* 毛玻璃边框 */
+  
+  /* 图标滤镜 - 优化为更现代的效果 */
+  --icon-hover-filter: brightness(0.8) saturate(1.2); /* 悬停时稍微变暗并增加饱和度 */
+  --icon-secondary-filter: opacity(0.6); /* 次要图标半透明效果 */
+  --icon-primary-filter: opacity(0.9); /* 主要图标轻微透明 */
+  
+  /* 字体 */
+  --font-family-base: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  
+  /* 字体大小 */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  
+  /* 行高 */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* 过渡动画 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* 文字颜色增强 - 确保可读性 */
+  --text-primary: #1a1a1a; /* 主要文字：深色，高对比度 */
+  --text-secondary: #6B6B70; /* 次要文字：中等灰色 */
+  --text-tertiary: #8E8E93; /* 三级文字：浅灰色 */
+  --text-on-glass: rgba(0, 0, 0, 0.85); /* 毛玻璃上的文字 */
+  
+  /* 交互状态 */
+  --hover-background: rgba(0, 122, 255, 0.1); /* 悬停背景 */
+  --active-background: rgba(0, 122, 255, 0.2); /* 激活背景 */
+  --focus-ring: 0 0 0 3px rgba(0, 122, 255, 0.3); /* 焦点环 */
+  
+  /* 其他 */
+  --dot-size: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  :root {
+    --box-margin: 8px;
+    --spacing-sm: 0.375rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --box-margin: 12px;
+    --spacing-lg: 2rem;
+    --spacing-xl: 2.5rem;
+  }
+}
