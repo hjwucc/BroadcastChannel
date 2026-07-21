@@ -1,9 +1,10 @@
 import type { CheerioAPI } from 'cheerio'
 import type { IndexedStaticProxyOptions, MessageSelection, StaticProxyOptions } from '../types'
 import { getProxiedUrl } from '../url'
+import { STYLE_URL_REGEX } from './utils'
 
 export function getVideo($: CheerioAPI, message: MessageSelection, options: IndexedStaticProxyOptions): string {
-  const { staticProxy = '', index = 0 } = options
+  const { staticProxy = '' } = options
   const video = message.find('.tgme_widget_message_video_wrap video')
   const videoSrc = video.attr('src')
 
@@ -11,9 +12,15 @@ export function getVideo($: CheerioAPI, message: MessageSelection, options: Inde
     video.attr('src', getProxiedUrl(staticProxy, videoSrc))
   }
 
+  const videoWrap = message.find('.tgme_widget_message_video_wrap')
+  const posterBg = videoWrap.attr('style')?.match(STYLE_URL_REGEX)?.[1]
+  if (posterBg) {
+    video.attr('poster', getProxiedUrl(staticProxy, posterBg))
+  }
+
   video
     .attr('controls', '')
-    .attr('preload', index > 15 ? 'metadata' : 'auto')
+    .attr('preload', 'metadata')
     .attr('playsinline', '')
     .attr('webkit-playsinline', '')
 
@@ -24,9 +31,15 @@ export function getVideo($: CheerioAPI, message: MessageSelection, options: Inde
     roundVideo.attr('src', getProxiedUrl(staticProxy, roundVideoSrc))
   }
 
+  const roundVideoWrap = message.find('.tgme_widget_message_roundvideo_wrap')
+  const roundPosterBg = roundVideoWrap.attr('style')?.match(STYLE_URL_REGEX)?.[1]
+  if (roundPosterBg) {
+    roundVideo.attr('poster', getProxiedUrl(staticProxy, roundPosterBg))
+  }
+
   roundVideo
     .attr('controls', '')
-    .attr('preload', index > 15 ? 'metadata' : 'auto')
+    .attr('preload', 'metadata')
     .attr('playsinline', '')
     .attr('webkit-playsinline', '')
 

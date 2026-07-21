@@ -42,5 +42,61 @@
         @apply hidden;
       }
     }
+
+    /* === OG Link Card === */
+    .og-link-card {
+      @apply mt-4 flex gap-3 rounded-panel border-0 bg-surface p-3 no-underline;
+
+      .og-card-thumb-wrap {
+        @apply h-[120px] w-[120px] flex-none overflow-hidden rounded-panel;
+        background: var(--code-background-color, #f5f1eb);
+      }
+
+      .og-card-thumb {
+        @apply h-full w-full object-cover;
+      }
+
+      .og-card-text {
+        @apply flex min-w-0 flex-col justify-center gap-0.5;
+      }
+
+      .og-card-site {
+        @apply block text-[0.75em] leading-tight text-muted;
+      }
+
+      .og-card-title {
+        @apply block text-[1em] font-bold leading-snug text-heading;
+      }
+
+      .og-card-description {
+        @apply block leading-normal text-muted;
+        font-size: 0.8em;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
+    .og-link-card:hover {
+      @apply no-underline;
+    }
+
+    /* Mobile: vertical card layout */
+    @media (max-width: 37.5rem) {
+      .og-link-card {
+        @apply flex-col p-0;
+
+        .og-card-thumb-wrap {
+          @apply h-auto w-full rounded-panel;
+          aspect-ratio: 16 / 9;
+        }
+
+        .og-card-text {
+          @apply p-3;
+        }
+      }
+    }
   }
 }

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import HealthInfo from '../components/HealthInfo.astro'
 import PostEntry from '../components/PostEntry.astro'
 import type { ChannelInfo, SeoMeta } from '../types'
 
@@ -34,6 +35,7 @@ const hasNewerPosts = showNewer && afterCursor
 <BaseLayout channel={channel} pageClass={pageClass} seo={pageSeo} pageType={pageType}>
   {pageHeading ? <h1 class="sr-only">{pageHeading}</h1> : null}
   <slot name="header" />
+  {pageType === 'home' && <HealthInfo />}
   <ol class="posts-feed" aria-label={isDetail ? 'Post' : 'Posts'}>
     {
       posts.map((post) => (

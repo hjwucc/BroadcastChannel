@@ -19,18 +19,18 @@ colors:
   base-dark-code-background: "#000"
   base-dark-code-text: "#ddd"
   base-dark-blockquote: "#ccc"
-  sepia-background: "#f4f1ec"
-  sepia-heading: "#333"
-  sepia-text: "#181513"
-  sepia-link: "#5a6570"
-  sepia-visited: "#725f82"
-  sepia-code-background: "#f9f9f9"
-  sepia-code-text: "#24201d"
-  sepia-blockquote: "#333"
-  sepia-accent: "#b23b00"
-  sepia-line: "rgba(0, 0, 0, 0.07)"
-  sepia-link-hover: "#3f4850"
-  sepia-muted: "#706862"
+  sepia-background: "#faf6f0"
+  sepia-heading: "#2c2825"
+  sepia-text: "#3d3833"
+  sepia-link: "#6b7b8a"
+  sepia-visited: "#8a7a9a"
+  sepia-code-background: "#f5f1eb"
+  sepia-code-text: "#2c2825"
+  sepia-blockquote: "#5c5650"
+  sepia-accent: "#c25e2e"
+  sepia-line: "rgba(0, 0, 0, 0.05)"
+  sepia-link-hover: "#3a4550"
+  sepia-muted: "#8a8279"
   sepia-surface: "#fff"
 typography:
   base-body:
@@ -239,6 +239,8 @@ BroadcastChannel hooks include `body.feed`, `ol.posts-feed`, `.post-entry`, `.po
 Feed markup is an `ol.posts-feed` of complete Telegram posts, not Bear's `ul.blog-posts` title list. HN News reveals the real story-title hook but retains the complete post beneath it. TG Channel reveals the real per-entry avatar, channel title, and message time to form one message column; these hooks do not create a profile card. Tags use `p.tags.post-tags`. There are no `/blog` or `/feed` routes, post detail keeps its page heading visually hidden, and no subscribe interface is invented. Keep navigation and utility controls restrained so they support rather than compete with the feed.
 
 Navigation, responsive search, expandable content, spoilers, image popovers, pagination, and back-to-top behavior use HTML and CSS rather than application JavaScript. Telegram comments on post detail are the sole intentional browser-script exception.
+
+The rendering pipeline (`src/lib/telegram/`) emits count-based image grid classes (`image-count-1` through `image-count-9`) alongside the legacy `image-list-even`/`image-list-odd` classes for backward compatibility. When `OG_PREVIEW` is enabled (default: true), link previews are asynchronously enriched with OpenGraph metadata as fire-and-forget background prefetches — see `docs/adr/0001-pipeline-extensions-for-sepia-media.md` and `docs/adr/0002-async-og-prefetch.md`. The link card is separated from the media block and placed after text content in `renderPostContent`. Video elements use `preload="metadata"` and extract poster frames from Telegram's video wrap preview.
 
 External Telegram description and post HTML must pass through `sanitizeContentHtml` before `set:html`. `HEADER_INJECT` and `FOOTER_INJECT` are separate trusted-administrator raw HTML boundaries and must never receive untrusted content.
 

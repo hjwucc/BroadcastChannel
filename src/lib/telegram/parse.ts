@@ -41,25 +41,31 @@ function renderPostContent(
     index: number
     id: string
     title: string
+    textFirst?: boolean
   },
 ): string {
-  const { channel, staticProxy, index, id, title } = options
+  const { channel, staticProxy, index, id, title, textFirst } = options
 
-  return [
-    getForwardedFrom($, message),
-    getReply($, message, { channel }),
+  const forwarded = getForwardedFrom($, message)
+  const reply = getReply($, message, { channel })
+  const textContent = content.html()
+  const mediaContent = [
     getImages($, message, { staticProxy, id, index, title }),
     getVideo($, message, { staticProxy, index }),
     getAudio($, message, { staticProxy }),
-    content.html(),
     getImageStickers($, message, { staticProxy, index }),
     getTgsStickers($, message, { staticProxy, index }),
     getVideoStickers($, message, { staticProxy, index }),
     ...renderRawContent($, message, { staticProxy }),
-    getLinkPreview($, message, { staticProxy, index }),
-  ]
-    .filter(isNonEmptyString)
-    .join('')
+  ].filter(isNonEmptyString).join('')
+  const linkCard = getLinkPreview($, message, { staticProxy, index })
+
+  // Link card is always placed after text content, independent of TEXT_FIRST
+  const orderedContent = textFirst
+    ? [forwarded, reply, textContent, mediaContent, linkCard]
+    : [forwarded, reply, mediaContent, textContent, linkCard]
+
+  return orderedContent.filter(isNonEmptyString).join('')
 }
 
 function getReactions($: CheerioAPI, message: MessageSelection, telegramHost: string, staticProxy: string): Reaction[] {
@@ -109,7 +115,7 @@ function getReactions($: CheerioAPI, message: MessageSelection, telegramHost: st
 }
 
 export async function extractPost($: CheerioAPI, item: AnyNode | null, options: ExtractPostOptions): Promise<Post> {
-  const { channel, telegramHost, staticProxy, index = 0, reactionsEnabled } = options
+  const { channel, telegramHost, staticProxy, index = 0, reactionsEnabled, textFirst } = options
   const message = item ? $(item).find('.tgme_widget_message') : $('.tgme_widget_message')
   normalizeUrlAttributes($, message)
   const hasReplyText = message.find('.js-message_reply_text').length > 0
@@ -122,7 +128,7 @@ export async function extractPost($: CheerioAPI, item: AnyNode | null, options: 
   const title = contentText.match(TITLE_PREVIEW_REGEX)?.[0] ?? contentText
   const id = message.attr('data-post')?.replace(new RegExp(`${channel}/`, 'i'), '') ?? ''
   const tags = rewriteTagLinksAndCollectTags($, content)
-  const contentHtml = renderPostContent($, message, content, { channel, staticProxy, index, id, title })
+  const contentHtml = renderPostContent($, message, content, { channel, staticProxy, index, id, title, textFirst })
 
   return {
     id,

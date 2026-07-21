@@ -9,19 +9,19 @@ export function isRenderablePost(post: Post | null | undefined): post is Post {
 }
 
 export async function getChannelPost(id: string): Promise<Post | null> {
-  const { $, channel, telegramHost, staticProxy, reactionsEnabled } = await loadChannelDocument({ id })
-  const post = await extractPost($, null, { channel, telegramHost, staticProxy, reactionsEnabled })
+  const { $, channel, telegramHost, staticProxy, reactionsEnabled, textFirst } = await loadChannelDocument({ id })
+  const post = await extractPost($, null, { channel, telegramHost, staticProxy, reactionsEnabled, textFirst })
 
   return isRenderablePost(post) ? post : null
 }
 
 export async function getChannelInfo(params: GetChannelInfoParams = {}): Promise<ChannelInfo> {
   const { before = '', after = '', q = '' } = params
-  const { $, channel, telegramHost, staticProxy, reactionsEnabled } = await loadChannelDocument({ before, after, q })
+  const { $, channel, telegramHost, staticProxy, reactionsEnabled, textFirst } = await loadChannelDocument({ before, after, q })
   const postNodes = $('.tgme_channel_history .tgme_widget_message_wrap').toArray()
   const avatar = $('.tgme_page_photo_image img').attr('src')
   const posts = (await Promise.all(
-    postNodes.map((item, index) => extractPost($, item, { channel, telegramHost, staticProxy, index, reactionsEnabled })),
+    postNodes.map((item, index) => extractPost($, item, { channel, telegramHost, staticProxy, index, reactionsEnabled, textFirst })),
   ))
     .reverse()
     .filter(isRenderablePost)

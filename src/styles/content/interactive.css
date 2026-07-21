@@ -100,11 +100,24 @@
     }
 
     .image-preview-button {
-      @apply mb-4 cursor-pointer appearance-none border-0 bg-transparent p-0;
+      @apply cursor-pointer appearance-none border-0 bg-transparent p-0;
     }
 
     .image-preview-button:focus-visible {
       @apply outline outline-2 outline-offset-4 outline-heading;
+    }
+
+    /* Multi-image grid: cells are flush and images fill them tightly */
+    .image-list-container .image-preview-button,
+    .image-list-container .image-preview-wrap {
+      @apply mb-0 h-full w-full;
+    }
+
+    .content
+      .image-list-container
+      .image-preview-wrap
+      img:not(.tg-emoji):not(.sticker):not(.link_preview_image):not(.modal-img) {
+      @apply h-full w-full object-cover;
     }
 
     .modal {
@@ -112,35 +125,188 @@
     }
 
     .modal:popover-open {
-      @apply grid place-items-center;
+      @apply block;
+      animation: modal-fade-in 180ms ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal:popover-open {
+        animation: none;
+      }
     }
 
     .modal__backdrop {
       @apply absolute inset-0 z-0 block cursor-pointer appearance-none border-0 bg-transparent;
     }
 
+    /* Surface is the scroll-snap + pinch-zoom container. No !important caps
+       so native pinch-zoom and pan can exceed the layout box. Smooth scroll
+       makes anchor-based prev/next navigation animate instead of jumping. */
     .modal__surface {
-      @apply relative z-10 m-0 flex w-auto items-center justify-center overflow-hidden box-border px-6 pb-6 pt-12;
+      @apply relative z-10 m-0 box-border flex;
+      width: 100%;
+      height: 100%;
       max-width: calc(100vw - 40px);
       max-height: calc(100dvh - 40px);
+      overflow: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-x pan-y pinch-zoom;
+      scroll-snap-type: x proximity;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+    }
+
+    .modal__item {
+      @apply relative m-0 flex shrink-0 items-center justify-center;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      /* Subtle placeholder while the lazy image fetches */
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Toolbar (counter + close) lives inside each .modal__item and travels
+       with it on scroll. Pinned to the top edge so it never overlaps the
+       image body. pointer-events:none on the container lets clicks pass
+       through to the backdrop on the empty middle area; children re-enable. */
+    .modal__toolbar {
+      @apply absolute z-30 flex items-center;
+      top: max(16px, env(safe-area-inset-top));
+      left: max(16px, env(safe-area-inset-left));
+      right: max(16px, env(safe-area-inset-right));
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .modal__toolbar > * {
+      pointer-events: auto;
+    }
+
+    /* Push close to the right edge of the toolbar. counter stays at left. */
+    .modal__close {
+      margin-left: auto;
+    }
+
+    .modal__counter {
+      @apply inline-flex items-center justify-center rounded-full bg-[rgba(0,0,0,0.72)] px-3 py-1 text-sm leading-none text-white shadow-soft;
+      font-variant-numeric: tabular-nums;
     }
 
     .modal__close {
-      @apply absolute z-20 inline-flex size-10 cursor-pointer items-center justify-center rounded-full border-0 bg-[rgba(0,0,0,0.72)] text-2xl leading-none text-white shadow-soft;
-      top: max(16px, env(safe-area-inset-top));
-      right: max(16px, env(safe-area-inset-right));
+      @apply inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[rgba(0,0,0,0.72)] text-2xl leading-none text-white shadow-soft;
+      width: 40px;
+      height: 40px;
+      transition: background-color 200ms var(--ease-out);
     }
 
     .modal__close:hover {
       @apply bg-[rgba(0,0,0,0.86)];
     }
 
+    /* Prev/Next navigation arrows. Pinned to the left/right vertical midpoint
+       of each .modal__item — industry-standard lightbox layout (Twitter/X,
+       Medium, Facebook). Anchor-based href="#item-id" lets the browser scroll
+       to the target item natively (no JS). The arrow icon is an inline SVG
+       data URI rendered via background-image so it optical-centers reliably
+       across fonts (text characters like ‹ › have inconsistent metrics). */
+    .modal__nav {
+      @apply absolute top-1/2 z-30 inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[rgba(0,0,0,0.55)] no-underline shadow-soft;
+      width: 48px;
+      height: 48px;
+      transform: translateY(-50%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 24px 24px;
+      transition:
+        background-color 200ms var(--ease-out),
+        transform 200ms var(--ease-out);
+    }
+
+    .modal__nav--prev {
+      left: max(16px, env(safe-area-inset-left));
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E");
+    }
+
+    .modal__nav--next {
+      right: max(16px, env(safe-area-inset-right));
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18l6-6-6-6'/%3E%3C/svg%3E");
+    }
+
+    .modal__nav:hover {
+      background-color: rgba(0, 0, 0, 0.82);
+      transform: translateY(-50%) scale(1.06);
+    }
+
+    .modal__nav:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 3px;
+    }
+
+    /* Disabled (first image's prev, last image's next): no href → no focus,
+       no pointer events. Kept visible at low opacity so the user can see they
+       are at the boundary (matches Twitter/X disabled-arrow affordance). */
+    .modal__nav--disabled {
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal__nav {
+        transition: none;
+      }
+
+      .modal__nav:hover {
+        transform: translateY(-50%);
+      }
+
+      .modal__surface {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* Mobile: 44px touch target (WCAG 2.5.5). Icon scales down proportionally. */
+    @media (max-width: 768px) {
+      .modal__nav {
+        width: 44px;
+        height: 44px;
+        background-size: 22px 22px;
+      }
+
+      .modal__close {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+      }
+    }
+
+    /* No !important caps: allow native pinch-zoom and pan to exceed layout box */
     .modal-img {
       @apply m-0 block rounded-media border border-line object-contain shadow-soft;
-      width: auto !important;
-      height: auto !important;
-      max-width: 100% !important;
-      max-height: 100% !important;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+    }
+  }
+
+  /* Hoisted out of `.content` so the rule actually applies to the root
+     <body> element instead of being scoped to `.content body` (which never
+     matches). Locks page scroll while any modal popover is open. */
+  body:has(.modal:popover-open) {
+    overflow: hidden;
+  }
+
+  /* Hoisted out of `.content` because `@keyframes` is a top-level at-rule
+     and lightningcss warns when it is nested inside a style rule. */
+  @keyframes modal-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 }

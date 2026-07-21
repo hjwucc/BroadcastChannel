@@ -1,0 +1,242 @@
+---
+import { getBooleanEnv } from '../lib/env'
+
+const healthInfoEnabled = getBooleanEnv(import.meta.env, 'HEALTH_INFO')
+---
+
+{healthInfoEnabled && (
+  <div id="health-info-container" class="post-entry health-info" style="display: none;">
+    <div class="post-meta">
+      <span class="timeline-dot health-dot" aria-hidden="true" />
+      <p>
+        <time id="health-time" class="health-time" />
+      </p>
+    </div>
+    <div id="health-content" class="post-content content health-content" style="display: none;">
+      <div id="heart-rate-info" class="health-item" style="display: none;">
+        <span class="health-icon" aria-hidden="true">❤️</span>
+        <span class="health-label">心率:</span>
+        <span id="heart-rate-value" class="health-value" />
+        <span class="health-unit">bpm</span>
+      </div>
+      <div id="location-info" class="health-item" style="display: none;">
+        <span class="health-icon" aria-hidden="true">📍</span>
+        <span class="health-label">位置:</span>
+        <span id="location-value" class="health-value" />
+      </div>
+    </div>
+  </div>
+)}
+
+<style>
+  .health-info {
+    /* Align with .posts-feed left edge (sepia: var(--space-6); base/other: 0) */
+    margin-left: var(--space-6, 0);
+    /* Match inter-post separation so HealthInfo sits one rhythm-unit above the feed */
+    margin-bottom: var(--space-10, 2.75rem);
+    /* Override .post-entry's content-visibility: auto, which applies
+       contain: paint and clips the pulse box-shadow at the top/left edges.
+       HealthInfo is always near the top of the page, so the lazy-render
+       optimization is unnecessary here. */
+    content-visibility: visible;
+  }
+
+  .health-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background-color: #ff6b6b;
+    animation: pulse 2s infinite;
+  }
+
+  .health-info .post-meta p {
+    padding-left: 0.65rem;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+    }
+  }
+
+  .health-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .health-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .health-icon {
+    font-size: 16px;
+  }
+
+  .health-label {
+    color: var(--muted-color);
+    font-weight: 500;
+  }
+
+  .health-value {
+    color: var(--text-color);
+    font-weight: 600;
+  }
+
+  .health-unit {
+    color: var(--muted-color);
+    font-size: 12px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .health-info {
+      margin-left: 0;
+      /* Mobile inter-post rhythm (matches .posts-feed > li + li on mobile) */
+      margin-bottom: var(--space-8, 2rem);
+    }
+
+    .health-content {
+      gap: 6px;
+    }
+
+    .health-item {
+      font-size: 13px;
+      gap: 6px;
+    }
+
+    .health-icon {
+      font-size: 14px;
+    }
+  }
+</style>
+
+{healthInfoEnabled && (
+  <script is:inline>
+    // Health info polling — deliberate client-side JS exception (like Telegram comments).
+    let healthInfoInterval;
+
+    async function fetchHealthInfo() {
+      try {
+        const response = await fetch('https://zepp-api.whj.life/api/get', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer zepp-api-token-whj.life',
+            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+            'Accept': '*/*',
+            'Host': 'zepp-api.whj.life',
+            'Connection': 'keep-alive'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        updateHealthInfo(data);
+      } catch (error) {
+        console.error('获取健康信息失败:', error);
+        const container = document.getElementById('health-info-container');
+        if (container) {
+          container.style.display = 'none';
+        }
+      }
+    }
+
+    function updateHealthInfo(data) {
+      const { heart_rate, location, updated } = data;
+      const hasHeartRate = heart_rate !== null && heart_rate !== undefined;
+      const hasLocation = location !== null && location !== undefined && location.lat !== null && location.lng !== null;
+
+      if (!hasHeartRate && !hasLocation) {
+        const container = document.getElementById('health-info-container');
+        if (container) {
+          container.style.display = 'none';
+        }
+        return;
+      }
+
+      const container = document.getElementById('health-info-container');
+      const content = document.getElementById('health-content');
+      if (container) {
+        container.style.display = 'block';
+      }
+      if (content) {
+        content.style.display = 'block';
+      }
+
+      const timeElement = document.getElementById('health-time');
+      if (timeElement && updated) {
+        const updateTime = new Date(updated);
+        const now = new Date();
+        const diffInMs = now - updateTime;
+        const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+        let timeago;
+        if (diffInMinutes < 1) {
+          timeago = '刚刚';
+        } else if (diffInMinutes < 60) {
+          timeago = `${diffInMinutes}分钟前`;
+        } else if (diffInHours < 24) {
+          timeago = `${diffInHours}小时前`;
+        } else if (diffInDays < 7) {
+          timeago = `${diffInDays}天前`;
+        } else {
+          timeago = updateTime.toLocaleDateString() + ' ' + updateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        timeElement.textContent = timeago;
+        timeElement.setAttribute('datetime', updated);
+        timeElement.setAttribute('title', timeago);
+      }
+
+      const heartRateInfo = document.getElementById('heart-rate-info');
+      const heartRateValue = document.getElementById('heart-rate-value');
+      if (hasHeartRate && heartRateInfo && heartRateValue) {
+        heartRateValue.textContent = heart_rate;
+        heartRateInfo.style.display = 'flex';
+      } else if (heartRateInfo) {
+        heartRateInfo.style.display = 'none';
+      }
+
+      const locationInfo = document.getElementById('location-info');
+      const locationValue = document.getElementById('location-value');
+      if (hasLocation && locationInfo && locationValue) {
+        locationValue.textContent = `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
+        locationInfo.style.display = 'flex';
+      } else if (locationInfo) {
+        locationInfo.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const timeElement = document.getElementById('health-time');
+      if (timeElement) {
+        timeElement.setAttribute('data-timezone', document.documentElement.getAttribute('data-timezone') || 'Asia/Shanghai');
+        timeElement.setAttribute('data-locale', document.documentElement.getAttribute('data-locale') || 'zh-cn');
+      }
+
+      fetchHealthInfo();
+      healthInfoInterval = setInterval(fetchHealthInfo, 2000);
+    });
+
+    window.addEventListener('beforeunload', function() {
+      if (healthInfoInterval) {
+        clearInterval(healthInfoInterval);
+      }
+    });
+  </script>
+)}

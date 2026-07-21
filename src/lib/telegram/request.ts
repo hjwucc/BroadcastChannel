@@ -72,6 +72,7 @@ export async function loadChannelDocument(
   const channel = getRequiredEnv('CHANNEL')
   const staticProxy = getStaticProxy(import.meta.env)
   const reactionsEnabled = getBooleanEnv(import.meta.env, 'REACTIONS')
+  const textFirst = getBooleanEnv(import.meta.env, 'TEXT_FIRST')
   const html = await loadTelegramHtml({
     host,
     channel,
@@ -88,5 +89,6 @@ export async function loadChannelDocument(
     telegramHost: host,
     staticProxy,
     reactionsEnabled,
+    textFirst,
   }
 }

@@ -40,6 +40,7 @@
 - Static proxy logic is shared in `src/lib/static-proxy.ts`; both Astro route `src/pages/static/[...url].ts` and Vercel Edge Function `api/static/index.ts` use it, with `/static/:path*` rewritten by `vercel.json`.
 - Do not broaden the static proxy target whitelist unless the task explicitly changes the security model.
 - Keep shared domain interfaces in `src/types.ts`; there are no TS path aliases, so use relative imports.
+- OG link card prefetching lives in `src/lib/og-preview.ts`; it uses an in-memory cache with 24h max age and fire-and-forget prefetch via `waitUntil` (Vercel) or `queueMicrotask` (fallback). `OG_PREVIEW` env var controls it (default: true). OG image URLs are referenced directly (not proxied) — see `docs/adr/0003-og-image-direct-reference.md`.
 
 ## Env and deployment gotchas
 

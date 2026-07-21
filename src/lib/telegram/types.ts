@@ -25,6 +25,7 @@ export interface ExtractPostOptions {
   staticProxy: string
   index?: number
   reactionsEnabled?: boolean
+  textFirst?: boolean
 }
 
 export interface LoadedChannelDocument {
@@ -33,4 +34,5 @@ export interface LoadedChannelDocument {
   telegramHost: string
   staticProxy: string
   reactionsEnabled?: boolean
+  textFirst?: boolean
 }
